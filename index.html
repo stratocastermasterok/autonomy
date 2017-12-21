@@ -1,0 +1,280 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <script language="javascript" type="text/javascript" src="libraries/p5.js"></script>
+
+  <!-- uncomment lines below to include extra p5 libraries -->
+  <!--<script language="javascript" src="libraries/p5.dom.js"></script>-->
+  <script language="javascript" src="libraries/p5.sound.js"></script>
+    <script language="javascript" src="libraries/p5.speech.js"></script>
+
+  <script language="javascript" type="text/javascript" src="sketch.js"></script>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js" type="text/javascript"></script>
+
+
+  <!-- this line removes any default padding and style. you might only need one of these values set. -->
+    <link rel="stylesheet" href="stylesheet.css">
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+
+
+<body>
+
+
+<div id="myChordLocation">
+Copy this: 
+</div>
+
+
+
+  </div>
+
+
+
+
+    <script src="libraries/p5.dom.js" type="text/javascript"></script>
+
+ <script type="text/javascript">
+    var accessToken = "39d57b08b2d449db967d476501ea52ee";
+        var baseUrl = "https://api.api.ai/v1/";
+
+
+
+
+var foo = new p5.SpeechRec(); 
+
+      myString=[];
+      undo=null;
+      countThis=0;
+      dupContent=null;
+
+
+
+    function setResponse(val) {
+      console.log(val);
+      eval ('var myShinyNewObject ='+val+';');
+      var myChordValue = myShinyNewObject.result;
+      console.log("Tomi is channelling her intensity into her experiments."); // log the result
+
+      myChordLocation = document.getElementById("myChordLocation");
+
+      whichMove=0;
+      radius=200;
+      freq=Math.PI*2;
+      myPhrase=0;
+      whichBounce=2;
+      rev=1;
+      distance=200;
+      angle=90;
+
+
+
+      whichMove=myShinyNewObject.result.parameters.whichMove;
+      radius=myShinyNewObject.result.parameters.radius;
+      freq=myShinyNewObject.result.parameters.freq;
+      myPhrase=myShinyNewObject.result.parameters.phase;
+      rev= myShinyNewObject.result.parameters.rev;
+      whichBounce=myShinyNewObject.result.parameters.whichBounce;
+
+
+      whichMove=myShinyNewObject.result.parameters.whichMove;
+      distance=myShinyNewObject.result.parameters.distance;
+      angle=myShinyNewObject.result.parameters.angle;
+      whichBounce=myShinyNewObject.result.parameters.whichBounce;
+
+
+
+
+
+      if (myShinyNewObject.result.parameters.whichMove==0)
+      {//line
+      whichMove=myShinyNewObject.result.parameters.whichMove;
+      distance=myShinyNewObject.result.parameters.distance;
+      angle=myShinyNewObject.result.parameters.angle;
+      whichBounce=myShinyNewObject.result.parameters.whichBounce;
+
+      myString.push([whichMove,[distance,angle],whichBounce])
+      countThis++;
+      undo=null;
+      }
+
+      else if (myShinyNewObject.result.parameters.whichMove==1)
+    {
+      //if circle
+      whichMove=myShinyNewObject.result.parameters.whichMove;
+      radius=myShinyNewObject.result.parameters.radius;
+      freq=myShinyNewObject.result.parameters.freq;
+      myPhrase=myShinyNewObject.result.parameters.phase;
+      rev= myShinyNewObject.result.parameters.rev;
+      whichBounce=myShinyNewObject.result.parameters.whichBounce;
+
+      myString.push([whichMove,[radius,freq,myPhrase,rev],whichBounce])
+      countThis++;
+      undo=null;
+    }
+
+
+      else if (myShinyNewObject.result.parameters.delete==1)
+    {
+      keep=myString.pop()
+      undo=keep;
+      countThis--;
+
+
+    }
+
+    else if (myShinyNewObject.result.parameters.delete==2)
+    {
+            if (undo!=null)
+            {
+            myString.push(undo);
+            countThis++;
+            undo=null;
+            }
+
+    }
+
+
+      else if (myShinyNewObject.result.action == "duplicate")
+    {
+
+                    myString.push(myString[countThis-1]);
+                    countThis++;
+
+
+    }
+
+    else if (myShinyNewObject.result.action == "changeDistance")
+    {
+        if (myShinyNewObject.result.parameters.radius!=null && countThis>0){
+        myString[countThis-1][1][0]=myShinyNewObject.result.parameters.radius;
+         }
+
+      }
+
+    else if (myShinyNewObject.result.action == "changeRadius")
+    {
+        if (myShinyNewObject.result.parameters.radius!=null && countThis>0){
+        myString[countThis-1][1][0]=myShinyNewObject.result.parameters.radius;
+         }
+
+      }
+
+    else if (myShinyNewObject.result.action == "changeAngle")
+    {
+        if (myShinyNewObject.result.parameters.angle!=null && countThis>0){
+        myString[countThis-1][1][1]=myShinyNewObject.result.parameters.angle;
+         }
+
+      }
+
+    else if (myShinyNewObject.result.action == "changeFreq")
+    {
+        if (myShinyNewObject.result.parameters.radius!=null && countThis>0){
+        myString[countThis-1][1][1]=myShinyNewObject.result.parameters.freq;
+         }
+
+      }
+   else if (myShinyNewObject.result.action == "changePhase")
+    {
+        if (myShinyNewObject.result.parameters.phase!=null && countThis>0){
+        myString[countThis-1][1][2]=myShinyNewObject.result.parameters.phase;
+         }
+
+      }
+   else if (myShinyNewObject.result.action == "changeRev")
+    {
+        if (myShinyNewObject.result.parameters.rev!=null && countThis>0){
+        myString[countThis-1][1][3]=myShinyNewObject.result.parameters.rev;
+         }
+
+      }
+   else if (myShinyNewObject.result.action == "changeBounce")
+    {
+        if (myShinyNewObject.result.parameters.whichBounce!=null && countThis>0){
+        myString[countThis-1][2]=myShinyNewObject.result.parameters.whichBounce;
+         }
+
+      }
+
+
+
+
+
+
+
+
+
+
+
+    santize = JSON.stringify(myString);
+    b=santize.split('"');
+    numO= b.length;
+    for (u=0; u<=numO; u++)
+    {
+    santize=santize.replace('"','');
+    }
+
+
+
+      myChordLocation.innerHTML=santize+"<br><br><i>"+myShinyNewObject.result.fulfillment.speech+'<i>';
+
+    }
+
+
+    function sendNow(myPhrase) {
+      var text = myPhrase;
+      $.ajax({
+        type: "POST",
+        url: baseUrl + "query?v=20150910",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        headers: {
+          "Authorization": "Bearer " + accessToken
+        },
+        data: JSON.stringify({ query: text, lang: "en", sessionId: "somerandomthing" }),
+        success: function(data) {
+          setResponse(JSON.stringify(data, undefined, 2));
+        },
+        error: function() {
+          setResponse("Internal Server Error");
+        }
+      });
+      setResponse("Loading...");
+    }
+
+
+
+function showResult()
+{
+
+  var myPhrase = foo.resultString;
+  sendNow(myPhrase);
+
+}
+
+
+foo.continuous= true;
+foo.onResult = showResult; // bind callback function to trigger when speech is recognized
+foo.start(); // start listening
+
+
+  </script>
+  
+  
+</body>
+</html>
